@@ -1,0 +1,50 @@
+
+
+
+
+import discord
+from discord.ext import commands
+# Botun Komut İsteklerini Ayarla
+intents = discord.Intents.default()
+intents.messages = True
+intents.message_content = True
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+# Bot Başlatıldığında Mesaj Gönder
+@bot.event
+async def on_ready():
+    print(f"Bot giriş yaptı: {bot.user}")
+    await bot.change_presence(activity=discord.Game(name="Geri Dönüşüm Rehberi"))
+
+# Geri dönüşüm rehberi komutu
+@bot.command()
+async def geri_donusum(ctx):
+    rehber = (
+        "**Geri Dönüşüm Rehberi**\n"
+        "♻️ **Kağıt**: Gazete, dergi, karton kutular geri dönüştürülebilir.\n"
+        "🛢️ **Plastik**: Su şişeleri, plastik torbalar (temizlenmiş şekilde).\n"
+        "🛠️ **Metal**: Alüminyum kutular, teneke kutular.\n"
+        "💡 **Cam**: Şişeler, kavanozlar (kırık cam hariç).\n"
+        "❌ **Dikkat**: Elektronik atık ve piller özel toplama alanlarına götürülmelidir.\n"
+    )
+    await ctx.send(rehber)
+
+# Kullanıcının sorusuna yanıt verme komutu
+@bot.command()
+async def soru(ctx, *, soru_metni):
+    yanit = (
+        f"**Sorunuz:** {soru_metni}\n"
+        "♻️ Genel geri dönüşüm kurallarını kontrol edin. Belirli bir malzeme için detay isterseniz `!geri_donusum` komutunu kullanabilirsiniz."
+    )
+    await ctx.send(yanit)
+
+# Hataları yönetmek için bir hata mesajı
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("⚠️ Geçersiz komut. Lütfen `!geri_donusum` veya `!soru` komutunu kullanın.")
+    else:
+        await ctx.send("❌ Bir hata oluştu!")
+
+# Botun Tokenini Yazın
+bot.run("")
